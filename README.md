@@ -1,6 +1,6 @@
 # Assinaturas Ninja
 
-Aplicativo Flutter offline para controle financeiro de assinaturas recorrentes.
+Aplicativo Flutter para controle financeiro de assinaturas recorrentes, com arquitetura em camadas, injeção de dependências e consumo de API REST externa.
 
 ## Sobre o App
 
@@ -11,21 +11,36 @@ O primeiro acesso apresenta uma configuração inicial simples: o usuário pode 
 ## Funcionalidades
 
 - Boas-vindas com nome e meta mensal opcionais.
-- Dashboard financeiro com próximas cobranças.
+- Dashboard financeiro com próximas cobranças e taxa de câmbio USD→BRL (via API).
 - Cadastro, edição, exclusão e detalhes de assinaturas.
 - Busca, filtros, ordenação e alteração rápida de status.
 - Relatórios por categoria e insights financeiros.
 - Ajustes e gerenciamento local dos dados.
-- Persistência offline com `SharedPreferences`.
-- Tema escuro e identidade visual própria para Android.
+- Persistência offline com Hive.
+- Tema escuro com 5 temas predefinidos + tema customizado.
+- Navegação por rotas nomeadas e tabs.
+- Identidade visual própria para Android.
 
 ## Tecnologias
 
 - Flutter / Dart
-- Provider
-- SharedPreferences
-- intl
-- uuid
+- Provider (gerenciamento de estado)
+- Hive (persistência local)
+- http (consumo de API REST — AwesomeAPI)
+- intl (formatação pt_BR)
+- uuid (identificadores únicos)
+
+## Arquitetura
+
+O projeto segue arquitetura em camadas com injeção de dependências:
+
+```txt
+telas → providers → services → models/utils
+```
+
+- **ServiceLocator** (`lib/services/service_locator.dart`): conecta interfaces abstratas às implementações concretas.
+- **Rotas nomeadas** (`lib/routes.dart`): `onGenerateRoute` centraliza toda a navegação.
+- **API REST** (`lib/services/currency_api_service.dart`): busca cotação USD→BRL com fallback gracioso offline.
 
 ## Como Rodar
 
@@ -52,26 +67,23 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ```txt
 lib/
+  main.dart
+  routes.dart
   models/
   providers/
   screens/
   services/
   utils/
   widgets/
+test/
 docs/
-  README.md
-  PROJECT_BRIEF.md
-  UI_GUIDE.md
-  ARCHITECTURE.md
-  VALIDATION.md
-  TASKS.md
 ```
 
 ## Documentação
 
 O índice completo está em [docs/README.md](docs/README.md).
 
-Os arquivos `AGENTS.md` e `CLAUDE.md` permanecem na raiz por fornecerem instruções operacionais para desenvolvimento assistido.
+Knowledge cards do projeto disponíveis em inglês e português em `.qoder/repowiki/knowledge/`.
 
 ## Regras Centrais
 
@@ -79,4 +91,4 @@ Os arquivos `AGENTS.md` e `CLAUDE.md` permanecem na raiz por fornecerem instruç
 - Vencimentos nos próximos 5 dias recebem destaque.
 - O valor deve ser maior que zero e o dia de vencimento deve ficar entre 1 e 31.
 - Dados demonstrativos nunca são inseridos automaticamente.
-- O app não utiliza login, backend, Firebase ou serviços externos.
+- O app funciona 100% offline; a chamada à API é opcional e degrada silenciosamente.
