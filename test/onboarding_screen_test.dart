@@ -45,7 +45,7 @@ void main() {
           ),
           ChangeNotifierProvider(create: (_) => CurrencyProvider()),
         ],
-        child: MaterialApp(home: const OnboardingScreen(), onGenerateRoute: onGenerateRoute),
+        child: const MaterialApp(home: OnboardingScreen(), onGenerateRoute: onGenerateRoute),
       ),
     );
 
@@ -67,7 +67,7 @@ void main() {
           ),
           ChangeNotifierProvider(create: (_) => CurrencyProvider()),
         ],
-        child: MaterialApp(home: const OnboardingScreen(), onGenerateRoute: onGenerateRoute),
+        child: const MaterialApp(home: OnboardingScreen(), onGenerateRoute: onGenerateRoute),
       ),
     );
 

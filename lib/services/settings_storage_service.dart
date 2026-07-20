@@ -11,19 +11,31 @@ class SettingsStorageService implements SettingsStorage {
 
   @override
   Future<AppSettings> loadSettings() async {
-    final box = Hive.box<String>(_boxName);
-    final raw = box.get(_settingsKey);
+    try {
+      final box = Hive.box<String>(_boxName);
+      final raw = box.get(_settingsKey);
 
-    if (raw == null || raw.isEmpty) {
+      if (raw == null || raw.isEmpty) {
+        return const AppSettings();
+      }
+
+      return AppSettings.fromMap(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (e) {
+      try {
+        final box = Hive.box<String>(_boxName);
+        await box.put(_settingsKey, jsonEncode(const AppSettings().toMap()));
+      } catch (_) {}
       return const AppSettings();
     }
-
-    return AppSettings.fromMap(jsonDecode(raw) as Map<String, dynamic>);
   }
 
   @override
   Future<void> saveSettings(AppSettings settings) async {
-    final box = Hive.box<String>(_boxName);
-    await box.put(_settingsKey, jsonEncode(settings.toMap()));
+    try {
+      final box = Hive.box<String>(_boxName);
+      await box.put(_settingsKey, jsonEncode(settings.toMap()));
+    } catch (_) {
+      rethrow;
+    }
   }
 }

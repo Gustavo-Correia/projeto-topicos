@@ -1,94 +1,102 @@
-# Assinaturas Ninja
+# Assinaturas Ninja 🥷📱
 
-Aplicativo Flutter para controle financeiro de assinaturas recorrentes, com arquitetura em camadas, injeção de dependências e consumo de API REST externa.
+Aplicativo Flutter moderno para controle financeiro e planejamento de assinaturas recorrentes, com arquitetura desacoplada baseada em Clean Architecture, gerenciamento de estado via Provider, injeção de dependências (Service Locator) e consumo de APIs REST externas brasileiras.
 
-## Sobre o App
+---
 
-O **Assinaturas Ninja** ajuda o usuário a cadastrar serviços recorrentes, acompanhar vencimentos, visualizar gastos ativos e identificar oportunidades de economia.
+## 🚀 Sobre o App
 
-O primeiro acesso apresenta uma configuração inicial simples: o usuário pode começar com a lista vazia ou carregar dados de demonstração voluntariamente.
+O **Assinaturas Ninja** ajuda os usuários a gerenciar serviços por assinatura, monitorar datas de vencimento com alertas de proximidade, visualizar o impacto financeiro no orçamento mensal/anual e identificar oportunidades reais de investimento. 
 
-## Funcionalidades
+O app é projetado sob a premissa **offline-first**: funciona perfeitamente sem conexão de rede, utilizando armazenamento local estruturado e seguro.
 
-- Boas-vindas com nome e meta mensal opcionais.
-- Dashboard financeiro com próximas cobranças e taxa de câmbio USD→BRL (via API).
-- Cadastro, edição, exclusão e detalhes de assinaturas.
-- Busca, filtros, ordenação e alteração rápida de status.
-- Relatórios por categoria e insights financeiros.
-- Ajustes e gerenciamento local dos dados.
-- Persistência offline com Hive.
-- Tema escuro com 5 temas predefinidos + tema customizado.
-- Navegação por rotas nomeadas e tabs.
-- Identidade visual própria para Android.
+---
 
-## Tecnologias
+## 🎨 Funcionalidades
 
-- Flutter / Dart
-- Provider (gerenciamento de estado)
-- Hive (persistência local)
-- http (consumo de API REST — AwesomeAPI)
-- intl (formatação pt_BR)
-- uuid (identificadores únicos)
+- **Onboarding Personalizado:** Tela inicial opcional para informar o nome e estabelecer uma meta de orçamento mensal limite. O usuário escolhe entre começar com uma base vazia ou carregar dados demonstrativos.
+- **Dashboard Financeiro Integrado:**
+  - Exibição de gastos ativos com conversão opcional em Dólar (USD).
+  - Alerta visual para assinaturas que vencem nos próximos 5 dias.
+  - Painel de Simulação de Economia: Calcula o rendimento em 12 meses caso os gastos das assinaturas fossem aplicados no Tesouro Selic.
+- **Gerenciamento de Assinaturas (CRUD completo):**
+  - Cadastro, visualização de detalhes, edição de dados e exclusão de assinaturas.
+  - Pausa/reativação rápida de assinaturas com recálculo instantâneo no orçamento.
+  - Busca integrada por nome, ordenação por valor e filtros por status (Todas, Ativas, Pausadas, Canceladas).
+- **Relatórios Visuais:**
+  - Distribuição percentual de gastos acumulados por categorias.
+  - Barra de progresso do orçamento mensal (limite de gastos).
+  - Insights de gastos mais caros e vencimentos imediatos.
+- **Ajustes e Temas Customizáveis:**
+  - Troca da moeda base (BRL/USD).
+  - 5 presets de temas escuros refinados (*Ninja Dark*, *Cyberpunk*, *Forest*, *Sunset*, *Midnight*).
+  - Possibilidade de configurar cores personalizadas de fundo, cartões e cores primárias/secundárias em tempo de execução.
 
-## Arquitetura
+---
 
-O projeto segue arquitetura em camadas com injeção de dependências:
+## 🛠️ Tecnologias e Dependências
 
-```txt
-telas → providers → services → models/utils
-```
+- **Flutter / Dart SDK:** Framework multiplataforma.
+- **Provider:** Gerenciador de estado reativo e injeção do ciclo de vida dos controladores.
+- **Hive & Hive Flutter:** Armazenamento local leve chave-valor persistido como JSON.
+- **http:** Cliente REST para consumo de serviços externos.
+- **intl:** Internacionalização e formatação de moedas (`pt_BR`) e datas.
+- **uuid:** Geração de IDs únicos para as assinaturas criadas.
 
-- **ServiceLocator** (`lib/services/service_locator.dart`): conecta interfaces abstratas às implementações concretas.
-- **Rotas nomeadas** (`lib/routes.dart`): `onGenerateRoute` centraliza toda a navegação.
-- **API REST** (`lib/services/currency_api_service.dart`): busca cotação USD→BRL com fallback gracioso offline.
+---
 
-## Como Rodar
+## 📐 Estrutura do Projeto e Arquitetura
 
-```bash
-flutter pub get
-flutter run
-```
-
-## Validação
-
-```bash
-flutter analyze
-flutter test
-flutter build apk --debug
-```
-
-O APK debug é gerado em:
-
-```txt
-build/app/outputs/flutter-apk/app-debug.apk
-```
-
-## Estrutura
+O código-fonte está estruturado sob uma organização lógica limpa em `lib/`:
 
 ```txt
 lib/
-  main.dart
-  routes.dart
-  models/
-  providers/
-  screens/
-  services/
-  utils/
-  widgets/
-test/
-docs/
+  main.dart             # Inicialização do app, Hive e Providers
+  routes.dart           # Roteamento centralizado por rotas nomeadas
+  models/               # Modelos/Entidades imutáveis (Subscription, AppSettings)
+  providers/            # Gerenciadores de Estado / Apresentadores (ChangeNotifier)
+  services/             # Serviços REST e persistência local (Interfaces e Implementações)
+  utils/                # Design System (typography, spacing, colors) e helpers
+  widgets/              # Componentes de interface reutilizáveis
+test/                   # Testes unitários de regras, widgets e integração
+docs/                   # Documentação detalhada da arquitetura do projeto
 ```
 
-## Documentação
+### Decisões de Design Principais:
+1. **Service Locator:** O contêiner estático `ServiceLocator` gerencia o acoplamento, conectando as interfaces abstratas de persistência às implementações concretas do Hive.
+2. **Resiliência e Recuperação:** As rotinas de carregamento de dados possuem tratamento de exceção (`try-catch`) que limpa e autorrecupera a base de dados de forma silenciosa para o estado padrão caso o JSON seja corrompido, evitando quebras na Splash Screen.
+3. **APIs REST Integradas:** 
+   - **AwesomeAPI** (`https://economia.awesomeapi.com.br/json/last/USD-BRL`) para cotação em tempo real.
+   - **Banco Central do Brasil** (SGS Série 432 - Selic anualizada) para a simulação financeira de economia.
+   - Ambas possuem timeout estrito de 5 segundos e degradação graciosa (funcionamento offline).
 
-O índice completo está em [docs/README.md](docs/README.md).
+---
 
-Knowledge cards do projeto disponíveis em inglês e português em `.qoder/repowiki/knowledge/`.
+## 📖 Documentação Detalhada
 
-## Regras Centrais
+A documentação detalhada e centralizada da arquitetura pode ser acessada em:
+- 📑 **[arquitetura.md](docs/arquitetura.md):** Manual completo contendo padrões de design MVC/MVP, fluxo de dados reativo, detalhamento das APIs REST e modelo de injeção de dependências.
 
-- Apenas assinaturas ativas entram nos totais e relatórios financeiros.
-- Vencimentos nos próximos 5 dias recebem destaque.
-- O valor deve ser maior que zero e o dia de vencimento deve ficar entre 1 e 31.
-- Dados demonstrativos nunca são inseridos automaticamente.
-- O app funciona 100% offline; a chamada à API é opcional e degrada silenciosamente.
+---
+
+## 🏃 Como Executar
+
+1. Baixe as dependências:
+   ```bash
+   flutter pub get
+   ```
+2. Execute a aplicação (garanta que um emulador ou dispositivo esteja conectado):
+   ```bash
+   flutter run
+   ```
+
+---
+
+## 🧪 Validação e Testes
+
+Para garantir a integridade do código antes do deploy, execute os comandos:
+
+```bash
+flutter analyze  # Análise estática do Dart
+flutter test     # Execução de testes de unidade e widgets
+```
