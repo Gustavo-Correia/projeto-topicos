@@ -26,10 +26,10 @@ O repositório não possui um sistema de configuração centralizado em tempo de
 - Manifests de plataforma (android/app/src/main/AndroidManifest.xml, ios/Runner/Info.plist) para metadados em nível nativo; sem overrides dinâmicos em tempo de execução.
 
 ### Arquivos e pacotes chave
-- lib/models/app_settings.dart — modelo imutável de settings (onboardingCompleted, userName, monthlyBudget, themeId, cores customizadas de tema) com copyWith, toMap, fromMap.
+- lib/models/app_settings.dart — modelo imutável de settings (onboardingCompleted, userName, monthlyBudget, themeId, cores customizadas de tema, displayCurrency) com copyWith, toMap, fromMap.
 - lib/services/settings_storage.dart — interface abstrata SettingsStorage.
 - lib/services/settings_storage_service.dart — implementação com Hive usando box settings_box e chave app_settings.
-- lib/providers/settings_provider.dart — ChangeNotifier que carrega/salva AppSettings, deriva o AppTheme ativo e expõe updateTheme, completeOnboarding, updateSettings, resetOnboarding.
+- lib/providers/settings_provider.dart — ChangeNotifier que carrega/salva AppSettings, deriva o AppTheme ativo e expõe updateTheme, completeOnboarding, updateSettings, updateCurrency, resetOnboarding.
 - lib/utils/app_colors.dart — constantes AppTheme predefinidas mais acessador AppColors.of(context); activeTheme mapeia themeId para um ThemeData.
 - lib/main.dart — inicializa boxes Hive, define Intl.defaultLocale = pt_BR, conecta Providers e constrói MaterialApp a partir de SettingsProvider.activeTheme.
 - pubspec.yaml — constraints de SDK/ambiente, versões de dependências, seções flutter_launcher_icons e flutter: assets.

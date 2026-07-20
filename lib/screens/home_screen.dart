@@ -13,7 +13,6 @@ import '../widgets/app_card.dart';
 import '../widgets/category_icon.dart';
 import '../widgets/brand_mark.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/summary_card.dart';
 import 'reports_screen.dart';
 import 'settings_screen.dart';
 import 'subscriptions_screen.dart';
@@ -101,6 +100,13 @@ class _DashboardPage extends StatelessWidget {
         final nextChargeDays = nextCharge == null ? null : provider.daysUntilDue(nextCharge);
 
         final dueThisWeek = provider.dueThisWeek;
+
+        final displaySettings = context.watch<SettingsProvider>().settings;
+        final displayCurrency = context.watch<CurrencyProvider>();
+        final usdRate = displayCurrency.usdBrlRate;
+        final showUsd = displaySettings.displayCurrency == 'USD' && usdRate != null && usdRate > 0;
+        final annualTotal = provider.totalMonthly * 12;
+        final annualDisplay = showUsd ? formatUsd(annualTotal / usdRate) : formatMoney(annualTotal);
         return Scaffold(
           body: SafeArea(
             child: ListView(
@@ -109,44 +115,52 @@ class _DashboardPage extends StatelessWidget {
                 const _Header(),
                 const SizedBox(height: AppSpacing.xxl),
                 _TotalCard(total: provider.totalMonthly),
-                const SizedBox(height: AppSpacing.sm),
-                const _ExchangeRateChip(),
                 const SizedBox(height: AppSpacing.lg),
-                SizedBox(
-                  height: 174,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: SummaryCard(
-                          icon: Icons.groups_rounded,
-                          title: 'Ativas',
-                          value: provider.activeCount.toString(),
-                          accent: theme.green,
-                        ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _StatTile(
+                        icon: Icons.groups_rounded,
+                        label: 'Assinaturas ativas',
+                        value: provider.activeCount.toString(),
+                        accent: theme.green,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: SummaryCard(
-                          icon: Icons.star_rounded,
-                          title: 'Mais cara',
-                          value: mostExpensive?.name ?? '-',
-                          subtitle: mostExpensive == null ? null : formatMoney(mostExpensive.price),
-                          accent: theme.purple,
-                        ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: _StatTile(
+                        icon: Icons.event_repeat_rounded,
+                        label: 'Projeção anual',
+                        value: annualDisplay,
+                        accent: theme.purple,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: SummaryCard(
-                          icon: Icons.calendar_month_rounded,
-                          title: 'Próxima',
-                          value: nextCharge?.name ?? '-',
-                          subtitle: nextChargeDays == null ? null : dueLabel(nextChargeDays),
-                          accent: theme.cyan,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                if (mostExpensive != null) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _HighlightTile(
+                    subscription: mostExpensive,
+                    leading: CategoryIcon(category: mostExpensive.category),
+                    overline: 'Assinatura mais cara',
+                    trailing: formatMoney(mostExpensive.price),
+                    trailingColor: theme.purple,
+                  ),
+                ],
+                if (nextCharge != null && nextChargeDays != null) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _HighlightTile(
+                    subscription: nextCharge,
+                    leading: CategoryIcon(category: nextCharge.category),
+                    overline: 'Próxima cobrança',
+                    trailing: dueLabel(nextChargeDays),
+                    trailingColor: nextChargeDays == 0
+                        ? theme.red
+                        : nextChargeDays <= 5
+                              ? theme.yellow
+                              : theme.cyan,
+                  ),
+                ],
                 const SizedBox(height: AppSpacing.xxl),
                 _SavingsInsightCard(monthlyTotal: provider.totalMonthly),
                 if (dueThisWeek.isNotEmpty) ...[
@@ -212,6 +226,14 @@ class _TotalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppColors.of(context);
+    final settings = context.watch<SettingsProvider>().settings;
+    final currency = context.watch<CurrencyProvider>();
+    final rate = currency.usdBrlRate;
+    final showUsd = settings.displayCurrency == 'USD' && rate != null && rate > 0;
+    final displayValue = showUsd ? formatUsd(total / rate) : formatMoney(total);
+    final subtitle = showUsd
+        ? 'Total das assinaturas ativas • R\$ ${rate.toStringAsFixed(2)}/US\$'
+        : 'Total das assinaturas ativas';
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
@@ -244,13 +266,13 @@ class _TotalCard extends StatelessWidget {
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    formatMoney(total),
+                    displayValue,
                     style: AppTypography.hero.copyWith(color: theme.textPrimary.withValues(alpha: 0.94)),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs + 2),
                 Text(
-                  'Total das assinaturas ativas',
+                  subtitle,
                   style: TextStyle(color: theme.textPrimary.withValues(alpha: 0.8)),
                 ),
               ],
@@ -266,6 +288,132 @@ class _TotalCard extends StatelessWidget {
             child: Icon(Icons.trending_up_rounded, color: theme.textPrimary.withValues(alpha: 0.7), size: 38),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _StatTile extends StatelessWidget {
+  const _StatTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.accent,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppColors.of(context);
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: theme.card,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: theme.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: accent.withValues(alpha: 0.14),
+            ),
+            child: Icon(icon, color: accent, size: 19),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTypography.titleMedium.copyWith(color: theme.textPrimary),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTypography.micro.copyWith(color: theme.muted),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HighlightTile extends StatelessWidget {
+  const _HighlightTile({
+    required this.subscription,
+    required this.leading,
+    required this.overline,
+    required this.trailing,
+    required this.trailingColor,
+  });
+
+  final Subscription subscription;
+  final Widget leading;
+  final String overline;
+  final String trailing;
+  final Color trailingColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppColors.of(context);
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          AppRoutes.subscriptionDetail,
+          arguments: subscription.id,
+        );
+      },
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md + 2),
+        decoration: BoxDecoration(
+          color: theme.card,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          border: Border.all(color: theme.border),
+        ),
+        child: Row(
+          children: [
+            leading,
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    overline,
+                    style: AppTypography.micro.copyWith(color: theme.muted),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    subscription.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.bodyLarge.copyWith(color: theme.textPrimary),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              trailing,
+              style: AppTypography.captionBold.copyWith(color: trailingColor),
+            ),
+            const SizedBox(width: 2),
+            Icon(Icons.chevron_right_rounded, color: theme.muted),
+          ],
+        ),
       ),
     );
   }
@@ -392,105 +540,25 @@ class _UpcomingChargeTile extends StatelessWidget {
 }
 
 /// Insight card showing the opportunity cost of subscriptions at the
-/// current Selic rate (Banco Central do Brasil). Hidden when offline.
-class _SavingsInsightCard extends StatelessWidget {
+/// current annual Selic rate (Banco Central do Brasil). Hidden when offline.
+class _SavingsInsightCard extends StatefulWidget {
   const _SavingsInsightCard({required this.monthlyTotal});
 
   final double monthlyTotal;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = AppColors.of(context);
-    return Consumer<CurrencyProvider>(
-      builder: (context, currency, _) {
-        final selic = currency.selicRate;
-        final projected = currency.projectedReturn12m(monthlyTotal);
-        if (selic == null || projected == null) {
-          return const SizedBox.shrink();
-        }
-        return Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                theme.green.withValues(alpha: 0.14),
-                theme.cyan.withValues(alpha: 0.08),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: theme.green.withValues(alpha: 0.35)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.trending_up_rounded, size: 18, color: theme.green),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Oportunidade de economia',
-                    style: TextStyle(
-                      color: theme.textPrimary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: theme.green.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'Selic ${selic.toStringAsFixed(2)}% a.a.',
-                      style: TextStyle(
-                        color: theme.green,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                'Investindo ${formatMoney(monthlyTotal)}/mês na Selic, você teria ${formatMoney(projected)} em 12 meses.',
-                style: TextStyle(color: theme.muted, fontSize: 12.5, height: 1.45),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Fonte: Banco Central do Brasil',
-                style: TextStyle(color: theme.muted.withValues(alpha: 0.6), fontSize: 10.5),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  State<_SavingsInsightCard> createState() => _SavingsInsightCardState();
 }
 
-/// Displays the current USD→BRL rate fetched from AwesomeAPI.
-/// Hidden when offline or while loading — no error shown.
-class _ExchangeRateChip extends StatefulWidget {
-  const _ExchangeRateChip();
-
-  @override
-  State<_ExchangeRateChip> createState() => _ExchangeRateChipState();
-}
-
-class _ExchangeRateChipState extends State<_ExchangeRateChip> {
+class _SavingsInsightCardState extends State<_SavingsInsightCard> {
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       if (!mounted) return;
       final currency = context.read<CurrencyProvider>();
-      if (!currency.getLoaded) {
-        currency.fetchRate();
+      if (!currency.selicLoaded) {
+        currency.fetchSelic();
       }
     });
   }
@@ -500,26 +568,76 @@ class _ExchangeRateChipState extends State<_ExchangeRateChip> {
     final theme = AppColors.of(context);
     return Consumer<CurrencyProvider>(
       builder: (context, currency, _) {
-        final rate = currency.usdBrlRate;
-        if (rate == null) {
+        final selic = currency.selicRate;
+        final projected = currency.projectedReturn12m(widget.monthlyTotal);
+        if (selic == null || projected == null) {
           return const SizedBox.shrink();
         }
-        return Row(
-          children: [
-            Icon(Icons.currency_exchange_rounded, size: 16, color: theme.muted),
-            const SizedBox(width: 6),
-            Text(
-              'USD → BRL: R\$ ${rate.toStringAsFixed(2)}',
-              style: TextStyle(color: theme.muted, fontSize: 12),
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.green.withValues(alpha: 0.14),
+                  theme.cyan.withValues(alpha: 0.08),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: theme.green.withValues(alpha: 0.35)),
             ),
-            const SizedBox(width: 6),
-            Text(
-              '(AwesomeAPI)',
-              style: TextStyle(color: theme.muted.withValues(alpha: 0.6), fontSize: 11),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.trending_up_rounded, size: 18, color: theme.green),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Oportunidade de economia',
+                      style: TextStyle(
+                        color: theme.textPrimary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: theme.green.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'Selic ${selic.toStringAsFixed(2)}% a.a.',
+                        style: TextStyle(
+                          color: theme.green,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Investindo ${formatMoney(widget.monthlyTotal)}/mês na Selic, você teria ${formatMoney(projected)} em 12 meses.',
+                  style: TextStyle(color: theme.muted, fontSize: 12.5, height: 1.45),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Fonte: Banco Central do Brasil',
+                  style: TextStyle(color: theme.muted.withValues(alpha: 0.6), fontSize: 10.5),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
   }
 }
+

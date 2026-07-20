@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/currency_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/subscription_provider.dart';
 import '../routes.dart';
@@ -89,6 +90,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: _saveProfile,
               icon: const Icon(Icons.save_rounded),
               label: const Text('Salvar preferências'),
+            ),
+            const SizedBox(height: 28),
+            const _SettingsLabel('Moeda de exibição'),
+            _CurrencySelector(
+              selected: settingsProvider.settings.displayCurrency,
+              onSelected: (currencyCode) {
+                settingsProvider.updateCurrency(currencyCode);
+                if (currencyCode == 'USD') {
+                  context.read<CurrencyProvider>().fetchUsdRate();
+                }
+              },
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Ao escolher USD, o total do painel passa a ser exibido em dólar usando a cotação atual (AwesomeAPI).',
+              style: TextStyle(color: theme.muted, fontSize: 11.5, height: 1.4),
             ),
             const SizedBox(height: 28),
             const _SettingsLabel('Aparência e Tema'),
@@ -401,6 +418,120 @@ class _ActionTile extends StatelessWidget {
               ),
             ),
             Icon(Icons.chevron_right_rounded, color: theme.muted),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CurrencySelector extends StatelessWidget {
+  const _CurrencySelector({required this.selected, required this.onSelected});
+
+  final String selected;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _CurrencyOption(
+            code: 'BRL',
+            symbol: 'R\$',
+            label: 'Real brasileiro',
+            selected: selected == 'BRL',
+            onTap: () => onSelected('BRL'),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _CurrencyOption(
+            code: 'USD',
+            symbol: 'US\$',
+            label: 'Dólar americano',
+            selected: selected == 'USD',
+            onTap: () => onSelected('USD'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CurrencyOption extends StatelessWidget {
+  const _CurrencyOption({
+    required this.code,
+    required this.symbol,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String code;
+  final String symbol;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppColors.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        decoration: BoxDecoration(
+          color: selected ? theme.green.withValues(alpha: 0.12) : theme.card,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: selected ? theme.green : theme.border,
+            width: selected ? 2 : 1.5,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: selected ? theme.green.withValues(alpha: 0.2) : theme.cardLight,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                symbol,
+                style: TextStyle(
+                  color: selected ? theme.green : theme.muted,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    code,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: selected ? theme.green : theme.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: theme.muted, fontSize: 11),
+                  ),
+                ],
+              ),
+            ),
+            if (selected) Icon(Icons.check_circle_rounded, color: theme.green, size: 20),
           ],
         ),
       ),

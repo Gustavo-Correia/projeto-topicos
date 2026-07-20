@@ -12,8 +12,10 @@ class CurrencyApiService {
   final http.Client _client;
 
   static const _usdBrlUrl = 'https://economia.awesomeapi.com.br/json/last/USD-BRL';
+  // Serie 432 = Selic meta anualizada (% a.a.). A serie 11 retorna a taxa
+  // diaria (ex.: 0.05), por isso nao e a correta para exibicao anual.
   static const _selicUrl =
-      'https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados/ultimos/1?formato=json';
+      'https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json';
 
   /// Fetches the current USD→BRL exchange rate from AwesomeAPI.
   Future<double?> fetchUsdBrlRate() async {
@@ -35,7 +37,7 @@ class CurrencyApiService {
     }
   }
 
-  /// Fetches the current Selic rate (% a.a.) from Banco Central do Brasil.
+  /// Fetches the current annual Selic target rate (% a.a.) from Banco Central.
   Future<double?> fetchSelicRate() async {
     try {
       final response = await _client

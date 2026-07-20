@@ -8,6 +8,7 @@ class AppSettings {
     this.customSecondaryColor,
     this.customBackgroundColor,
     this.customCardColor,
+    this.displayCurrency = 'BRL',
   });
 
   final bool onboardingCompleted;
@@ -18,6 +19,7 @@ class AppSettings {
   final int? customSecondaryColor;
   final int? customBackgroundColor;
   final int? customCardColor;
+  final String displayCurrency;
 
   AppSettings copyWith({
     bool? onboardingCompleted,
@@ -29,6 +31,7 @@ class AppSettings {
     int? customSecondaryColor,
     int? customBackgroundColor,
     int? customCardColor,
+    String? displayCurrency,
   }) {
     return AppSettings(
       onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
@@ -39,6 +42,7 @@ class AppSettings {
       customSecondaryColor: customSecondaryColor ?? this.customSecondaryColor,
       customBackgroundColor: customBackgroundColor ?? this.customBackgroundColor,
       customCardColor: customCardColor ?? this.customCardColor,
+      displayCurrency: displayCurrency ?? this.displayCurrency,
     );
   }
 
@@ -52,6 +56,7 @@ class AppSettings {
       'customSecondaryColor': customSecondaryColor,
       'customBackgroundColor': customBackgroundColor,
       'customCardColor': customCardColor,
+      'displayCurrency': displayCurrency,
     };
   }
 
@@ -65,6 +70,7 @@ class AppSettings {
       customSecondaryColor: map['customSecondaryColor'] as int?,
       customBackgroundColor: map['customBackgroundColor'] as int?,
       customCardColor: map['customCardColor'] as int?,
+      displayCurrency: map['displayCurrency'] as String? ?? 'BRL',
     );
   }
 }

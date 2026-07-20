@@ -19,7 +19,7 @@ This Flutter monorepo uses the standard Dart/Flutter dependency management syste
 - **SDK constraints**: `environment.sdk: '>=3.11.0 <4.0.0'` constrains the Dart SDK; the lockfile further pins `flutter >=3.38.4`.
 
 **Key files**
-- `pubspec.yaml` — single source of truth for declared dependencies (`provider`, `hive`, `hive_flutter`, `intl`, `uuid`, `cupertino_icons`) and dev tools (`flutter_lints`, `flutter_launcher_icons`).
+- `pubspec.yaml` — single source of truth for declared dependencies (`provider`, `hive`, `hive_flutter`, `intl`, `uuid`, `http`, `cupertino_icons`) and dev tools (`flutter_lints`, `flutter_launcher_icons`).
 - `pubspec.lock` — immutable snapshot of the full dependency graph (direct + transitive), including platform plugins such as `path_provider_*` and `jni`/`jni_flutter` pulled in transitively by Hive.
 - `android/build.gradle.kts`, `android/settings.gradle.kts`, `ios/Runner.xcodeproj/project.pbxproj` — platform shells depend on the Flutter engine but do not declare their own package manifests; native plugin integration is handled through Flutter's generated registrants.
 

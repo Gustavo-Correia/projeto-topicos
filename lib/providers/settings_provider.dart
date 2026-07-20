@@ -121,4 +121,11 @@ class SettingsProvider extends ChangeNotifier {
     await _storage.saveSettings(_settings);
     notifyListeners();
   }
+
+  /// Updates the display currency ('BRL' or 'USD') and persists it.
+  Future<void> updateCurrency(String currency) async {
+    _settings = _settings.copyWith(displayCurrency: currency);
+    await _storage.saveSettings(_settings);
+    notifyListeners();
+  }
 }

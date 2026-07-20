@@ -1,1 +1,1 @@
-App Flutter que rastreia assinaturas recorrentes, gerencia seus status e datas de vencimento, persiste dados com Hive e renderiza uma UI com tema escuro guiada por estado Provider.
+App Flutter que rastreia assinaturas recorrentes, gerencia seus status e datas de vencimento, persiste dados com Hive, renderiza uma UI com tema escuro guiada por estado Provider e enriquece o dashboard com dados REST opcionais (taxa de câmbio USD→BRL e insight de economia baseado na Selic) que degradam graciosamente offline.

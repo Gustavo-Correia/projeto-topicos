@@ -4,3 +4,6 @@
 - Storage backends implement an interface class (e.g. `SubscriptionStorageService implements SubscriptionStorage`) so providers accept the interface via constructor injection, enabling test doubles.
 - Async mutations follow a write-then-notify pattern: mutate the in-memory collection, persist through the injected service, then call `notifyListeners()` once.
 - Theming is accessed through `AppColors.of(context)` which reads the current `AppTheme` from `SettingsProvider`, rather than importing colors directly.
+- Navigation goes through named routes defined in `lib/routes.dart` (`AppRoutes` constants resolved by `onGenerateRoute`); screens call `Navigator.pushNamed`/`pushReplacementNamed` rather than constructing `MaterialPageRoute` inline.
+- Cross-cutting services are obtained from the explicit `ServiceLocator` (`lib/services/service_locator.dart`) and injected into providers via constructor, keeping wiring visible and testable.
+- External API calls live in `services/currency_api_service.dart` and always return `null` on failure (offline, timeout, parse error) instead of throwing; the UI hides the corresponding widget when data is unavailable, so no network feature blocks the app.
