@@ -1,1 +1,0 @@
-Flutter app that tracks recurring subscriptions, manages their status and due dates, persists data with Hive, renders a dark-themed UI driven by Provider state, and enriches the dashboard with optional REST data (USD→BRL exchange rate and Selic-based savings insights) that degrades gracefully offline.

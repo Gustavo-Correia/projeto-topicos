@@ -1,1 +1,0 @@
-Execute uma vez na raiz do repositório: `flutter pub get`, depois `flutter run` para iniciar em qualquer dispositivo conectado; `flutter analyze` e `flutter test` validam regras de lint e testes unitários/widget; `flutter build apk --debug` gera `build/app/outputs/flutter-apk/app-debug.apk`.

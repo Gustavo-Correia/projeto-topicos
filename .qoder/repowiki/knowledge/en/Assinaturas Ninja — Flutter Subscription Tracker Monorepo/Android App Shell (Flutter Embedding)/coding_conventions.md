@@ -1,2 +1,0 @@
-- All Android configuration is parameterized through `flutter.*` Gradle properties (compileSdk, ndkVersion, minSdk, targetSdk, versionCode, versionName) rather than hard-coded constants.
-- Build types keep release signing pointing at the debug keystore by default, with an explicit TODO comment indicating where production signing should be configured.

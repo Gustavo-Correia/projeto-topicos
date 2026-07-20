@@ -1,1 +1,0 @@
-Run once at the repo root: `flutter pub get`, then `flutter run` to launch on any connected device; `flutter analyze` and `flutter test` validate lint rules and unit/widget tests; `flutter build apk --debug` produces `build/app/outputs/flutter-apk/app-debug.apk`.

@@ -1,5 +1,0 @@
-- Each test file defines its own fake storage class implementing the corresponding `*Storage` interface, keeping fakes co-located with the test that needs them.
-- Stateful providers are wired into the test tree via `ChangeNotifierProvider`/`MultiProvider` constructors rather than global overrides, so each test controls its own instance.
-- Non-deterministic time is injected through an optional `now` parameter on `SubscriptionProvider` instead of mocking `DateTime.now()` globally.
-- Test data is constructed through local helper functions (e.g. the `subscription({...})` named constructor) with default values for fields not under test.
-- Assertions use `group(...)` blocks to cluster related behaviors (dashboard calculations, CRUD, filters) inside a single `main()`.

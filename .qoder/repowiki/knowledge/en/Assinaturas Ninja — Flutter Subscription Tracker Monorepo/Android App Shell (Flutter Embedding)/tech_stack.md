@@ -1,1 +1,0 @@
-Android application using the Flutter Gradle plugin (v2 embedding), Kotlin/JVM 17, and the standard `FlutterActivity` host; build uses Gradle Kotlin DSL (`build.gradle.kts`) with NDK version sourced from Flutter.
