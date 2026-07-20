@@ -147,7 +147,8 @@ class _DashboardPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xxxl),
+                const SizedBox(height: AppSpacing.xxl),
+                _SavingsInsightCard(monthlyTotal: provider.totalMonthly),
                 if (dueThisWeek.isNotEmpty) ...[
                   _DueAlert(count: dueThisWeek.length),
                   const SizedBox(height: AppSpacing.xxl),
@@ -383,6 +384,88 @@ class _UpcomingChargeTile extends StatelessWidget {
                 Icon(Icons.chevron_right_rounded, color: theme.muted),
               ],
             ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Insight card showing the opportunity cost of subscriptions at the
+/// current Selic rate (Banco Central do Brasil). Hidden when offline.
+class _SavingsInsightCard extends StatelessWidget {
+  const _SavingsInsightCard({required this.monthlyTotal});
+
+  final double monthlyTotal;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppColors.of(context);
+    return Consumer<CurrencyProvider>(
+      builder: (context, currency, _) {
+        final selic = currency.selicRate;
+        final projected = currency.projectedReturn12m(monthlyTotal);
+        if (selic == null || projected == null) {
+          return const SizedBox.shrink();
+        }
+        return Container(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                theme.green.withValues(alpha: 0.14),
+                theme.cyan.withValues(alpha: 0.08),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.green.withValues(alpha: 0.35)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.trending_up_rounded, size: 18, color: theme.green),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Oportunidade de economia',
+                    style: TextStyle(
+                      color: theme.textPrimary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: theme.green.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Selic ${selic.toStringAsFixed(2)}% a.a.',
+                      style: TextStyle(
+                        color: theme.green,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Investindo ${formatMoney(monthlyTotal)}/mês na Selic, você teria ${formatMoney(projected)} em 12 meses.',
+                style: TextStyle(color: theme.muted, fontSize: 12.5, height: 1.45),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Fonte: Banco Central do Brasil',
+                style: TextStyle(color: theme.muted.withValues(alpha: 0.6), fontSize: 10.5),
+              ),
+            ],
           ),
         );
       },
