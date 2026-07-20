@@ -1,0 +1,1 @@
+Minimal Android application shell that embeds the Flutter engine, declares the launcher Activity and app resources for the Assinaturas Ninja project.

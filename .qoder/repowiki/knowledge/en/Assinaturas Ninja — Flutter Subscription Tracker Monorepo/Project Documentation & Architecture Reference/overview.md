@@ -1,0 +1,1 @@
+Curated documentation for the Assinaturas Ninja Flutter app, covering architecture, UI guidelines, validation rules, tasks, and an AI agent prompt reference.

@@ -1,0 +1,30 @@
+DETALHAMENTO DO PROJETO
+
+Nome do projeto: Assinaturas Ninja
+
+O projeto Assinaturas Ninja pretende ser um aplicativo mobile desenvolvido em Flutter para ajudar usuários a organizar e acompanhar seus gastos com assinaturas recorrentes, como streaming, aplicativos, cursos, ferramentas digitais e outros serviços pagos mensalmente.
+
+O objetivo principal do aplicativo e oferecer uma forma simples e visual de registrar assinaturas, consultar valores mensais, acompanhar datas de vencimento e identificar quais serviços estão pesando mais no orçamento. A ideia e que o usuário consiga ter uma visão geral dos seus gastos recorrentes e tome decisões melhores sobre quais assinaturas manter, pausar ou cancelar.
+
+Entre as principais funcionalidades previstas estão:
+
+- Cadastro de assinaturas com nome, valor, categoria, dia de vencimento, forma de pagamento, status e observações.
+- Edicao, visualizacao e exclusao de assinaturas cadastradas.
+- Dashboard com resumo dos gastos mensais ativos, quantidade de assinaturas ativas, assinatura mais cara e próximas cobranças.
+- Filtros, busca e ordenacao para facilitar a organizacao das assinaturas.
+- Relatorios simples por categoria, mostrando onde o usuario gasta mais.
+- Tela de configuracoes para dados locais do usuario e gerenciamento das informacoes.
+- Onboarding inicial para apresentar o aplicativo e permitir que o usuario comece vazio ou explore exemplos.
+
+O aplicativo será pensado para funcionar de forma offline, sem login, sem banco de dados externo e sem integração com pagamentos reais. Os dados deverão ser salvos localmente no aparelho, utilizando uma solução simples de persistência. A proposta e manter o projeto dentro de um escopo enxuto, priorizando funcionalidades essenciais, organização do código, boa apresentação visual e facilidade de explicação.
+
+Visualmente, o Assinaturas Ninja devera seguir uma identidade escura e moderna, com foco em um estilo financeiro simples, direto e agradável para uso em celular.
+
+De forma geral, o Assinaturas Ninja busca resolver um problema comum: o acumulo de pequenas assinaturas que, juntas, podem comprometer o orçamento mensal. Com o aplicativo, o usuário poderá acompanhar esses gastos de maneira centralizada e tomar decisões mais conscientes sobre suas despesas recorrentes.
+
+MEMBROS DO GRUPO:
+
+Luis Gustavo Alves Correia
+Luiz Augusto Farias Hora
+Marcos Yago Andrade Gonzaga
+Felipe da Silva Souza

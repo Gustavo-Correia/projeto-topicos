@@ -1,0 +1,3 @@
+- Todo código Dart fica em `lib/` e é guiado por estado Provider com persistência Hive.
+- Testes em `test/` espelham a estrutura de `lib/` e usam `flutter_test` com implementações fake de storage.
+- Linting segue a configuração do `analysis_options.yaml` raiz via `flutter_lints`.

@@ -1,0 +1,1 @@
+Flutter app that tracks recurring subscriptions, manages their status and due dates, persists data with Hive, and renders a dark-themed UI driven by Provider state.

@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: flutter_app
+title: Assinaturas Ninja — Flutter Subscription Tracker App
+scope:
+    - lib/
+source_files: []
+depends_on: []
+related_to: []

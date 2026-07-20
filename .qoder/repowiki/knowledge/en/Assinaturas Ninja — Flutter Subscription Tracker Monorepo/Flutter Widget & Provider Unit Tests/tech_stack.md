@@ -1,0 +1,1 @@
+flutter_test + provider's `ChangeNotifierProvider`/`MultiProvider` for dependency injection; `testWidgets` for UI interaction assertions.

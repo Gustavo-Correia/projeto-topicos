@@ -1,0 +1,5 @@
+- Cada arquivo de teste define sua própria classe fake de storage implementando a interface `*Storage` correspondente, mantendo fakes co-localizados com o teste que os necessita.
+- Providers com estado são conectados na árvore de teste via construtores `ChangeNotifierProvider`/`MultiProvider` em vez de overrides globais, para que cada teste controle sua própria instância.
+- Tempo não-determinístico é injetado através de um parâmetro opcional `now` no `SubscriptionProvider` em vez de mockar `DateTime.now()` globalmente.
+- Dados de teste são construídos através de funções helper locais (ex: construtor nomeado `subscription({...})`) com valores padrão para campos não testados.
+- Asserções usam blocos `group(...)` para agrupar comportamentos relacionados (cálculos de dashboard, CRUD, filtros) dentro de um único `main()`.

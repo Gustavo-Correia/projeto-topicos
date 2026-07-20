@@ -1,0 +1,1 @@
+Flutter Material 3 (`useMaterial3: true`), state via `provider` (`ChangeNotifierProvider`/`Consumer`), persistence via `hive_flutter` with manual `jsonEncode`/`jsonDecode` over `Box<String>` keys, UUID generation via `uuid`, locale set to `pt_BR` through `intl`.

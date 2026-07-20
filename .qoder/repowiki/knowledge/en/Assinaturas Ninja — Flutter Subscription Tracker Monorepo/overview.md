@@ -1,0 +1,1 @@
+Single Flutter monorepo that bundles the Dart app, Android/iOS platform shells, tests, and docs under one pubspec-driven build.

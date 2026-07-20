@@ -1,0 +1,4 @@
+- Documentos usam cabeçalhos de seção com prefixo de emoji (🚀, 📂, 🛠️) como âncoras visuais para leitura rápida.
+- Fatos técnicos são apresentados em tabelas Markdown (ex: arquivo → responsabilidade, regra → localização → status do teste) em vez de parágrafos em prosa.
+- Decisões de arquitetura são ilustradas com diagramas Mermaid inline (`graph TD`, `classDiagram`, `flowchart TD`) embutidos diretamente nos docs.
+- Referências cruzadas apontam para arquivos fonte concretos via links absolutos `file:///` para que leitores possam saltar direto para a implementação.

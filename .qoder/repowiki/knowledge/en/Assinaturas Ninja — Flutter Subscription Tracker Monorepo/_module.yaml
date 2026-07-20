@@ -1,0 +1,15 @@
+schema_version: 1
+module_path: ""
+title: Assinaturas Ninja — Flutter Subscription Tracker Monorepo
+scope:
+    - README.md
+    - AGENTS.md
+    - CLAUDE.md
+    - DETALHAMENTO_PROJETO.txt
+    - .gitignore
+    - analysis_options.yaml
+    - pubspec.yaml
+    - pubspec.lock
+source_files: []
+depends_on: []
+related_to: []

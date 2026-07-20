@@ -1,0 +1,1 @@
+Unit and widget tests for the Flutter app's models, providers, storage fakes, and UI widgets using flutter_test.

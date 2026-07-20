@@ -1,0 +1,2 @@
+- Toda configuração Android é parametrizada através de propriedades Gradle `flutter.*` (compileSdk, ndkVersion, minSdk, targetSdk, versionCode, versionName) em vez de constantes hardcoded.
+- Build types mantêm a assinatura de release apontando para a keystore de debug por padrão, com um comentário TODO explícito indicando onde a assinatura de produção deve ser configurada.

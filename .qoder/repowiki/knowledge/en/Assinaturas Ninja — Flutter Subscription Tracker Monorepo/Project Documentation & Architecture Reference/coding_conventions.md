@@ -1,0 +1,4 @@
+- Documents use emoji-prefixed section headings (🚀, 📂, 🛠️) as visual anchors for quick scanning.
+- Technical facts are presented in Markdown tables (e.g., file → responsibility, rule → location → test status) rather than prose paragraphs.
+- Architecture decisions are illustrated with inline Mermaid diagrams (`graph TD`, `classDiagram`, `flowchart TD`) embedded directly in the docs.
+- Cross-references point to concrete source files via absolute `file:///` links so readers can jump straight to the implementation.

@@ -1,0 +1,1 @@
+Flutter SDK com Dart (SDK >=3.11.0 <4.0.0); compartilhado entre o app, testes e ambos os shells de plataforma via `pubspec.yaml` raiz. Linting usa `flutter_lints`; ícones são gerados via `flutter_launcher_icons` a partir de `assets/branding/app_icon_master.png`.

@@ -1,0 +1,6 @@
+- Providers expose private mutable lists and public getters returning unmodifiable views (`List.unmodifiable(_subscriptions)`) while mutating only through explicit methods that call `_saveAndNotify()` followed by `notifyListeners()`.
+- Domain enums (`SubscriptionStatus`, `SubscriptionFilter`, `SubscriptionSort`) carry a `label` getter that returns localized Portuguese strings via a switch expression.
+- Models are immutable value objects constructed with required named parameters and updated via `copyWith`, with `toMap`/`fromMap` serializing `DateTime` as ISO-8601 strings and enums by `.name`.
+- Storage backends implement an interface class (e.g. `SubscriptionStorageService implements SubscriptionStorage`) so providers accept the interface via constructor injection, enabling test doubles.
+- Async mutations follow a write-then-notify pattern: mutate the in-memory collection, persist through the injected service, then call `notifyListeners()` once.
+- Theming is accessed through `AppColors.of(context)` which reads the current `AppTheme` from `SettingsProvider`, rather than importing colors directly.

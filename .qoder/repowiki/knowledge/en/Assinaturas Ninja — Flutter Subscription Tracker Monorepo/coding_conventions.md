@@ -1,0 +1,3 @@
+- All Dart code lives under `lib/` and is driven by Provider state backed by Hive persistence.
+- Tests in `test/` mirror the `lib/` structure and use `flutter_test` with fake storage implementations.
+- Linting follows the root `analysis_options.yaml` configuration via `flutter_lints`.
