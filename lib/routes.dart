@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'models/subscription.dart';
-import 'screens/home_screen.dart';
-import 'screens/onboarding_screen.dart';
-import 'screens/splash_screen.dart';
-import 'screens/subscription_detail_screen.dart';
-import 'screens/subscription_form_screen.dart';
+import 'package:assinaturas_ninja/features/subscriptions/model/subscription.dart';
+import 'package:assinaturas_ninja/features/dashboard/presentation/home_screen.dart';
+import 'package:assinaturas_ninja/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:assinaturas_ninja/features/onboarding/presentation/splash_screen.dart';
+import 'package:assinaturas_ninja/features/subscriptions/presentation/subscription_detail_screen.dart';
+import 'package:assinaturas_ninja/features/subscriptions/presentation/subscription_form_screen.dart';
 
 /// Named route constants used across the app.
 abstract class AppRoutes {

@@ -1,0 +1,41 @@
+import 'dart:convert';
+
+import 'package:hive/hive.dart';
+
+import 'package:assinaturas_ninja/features/settings/model/app_settings.dart';
+import 'package:assinaturas_ninja/features/settings/service/settings_storage.dart';
+
+class SettingsStorageService implements SettingsStorage {
+  static const String _settingsKey = 'app_settings';
+  static const String _boxName = 'settings_box';
+
+  @override
+  Future<AppSettings> loadSettings() async {
+    try {
+      final box = Hive.box<String>(_boxName);
+      final raw = box.get(_settingsKey);
+
+      if (raw == null || raw.isEmpty) {
+        return const AppSettings();
+      }
+
+      return AppSettings.fromMap(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (e) {
+      try {
+        final box = Hive.box<String>(_boxName);
+        await box.put(_settingsKey, jsonEncode(const AppSettings().toMap()));
+      } catch (_) {}
+      return const AppSettings();
+    }
+  }
+
+  @override
+  Future<void> saveSettings(AppSettings settings) async {
+    try {
+      final box = Hive.box<String>(_boxName);
+      await box.put(_settingsKey, jsonEncode(settings.toMap()));
+    } catch (_) {
+      rethrow;
+    }
+  }
+}

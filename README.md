@@ -47,18 +47,23 @@ O app é projetado sob a premissa **offline-first**: funciona perfeitamente sem 
 
 ## 📐 Estrutura do Projeto e Arquitetura
 
-O código-fonte está estruturado sob uma organização lógica limpa em `lib/`:
+O código-fonte está estruturado de forma modular orientada a funcionalidades (**Feature-First**):
 
 ```txt
 lib/
   main.dart             # Inicialização do app, Hive e Providers
   routes.dart           # Roteamento centralizado por rotas nomeadas
-  models/               # Modelos/Entidades imutáveis (Subscription, AppSettings)
-  providers/            # Gerenciadores de Estado / Apresentadores (ChangeNotifier)
-  services/             # Serviços REST e persistência local (Interfaces e Implementações)
-  utils/                # Design System (typography, spacing, colors) e helpers
-  widgets/              # Componentes de interface reutilizáveis
-test/                   # Testes unitários de regras, widgets e integração
+  core/                 # Recursos e widgets compartilhados globalmente
+    di/                 # Injeção de dependências (ServiceLocator)
+    theme/              # Cores, espaçamentos e tipografias globais
+    utils/              # Helpers e formatadores genéricos
+    widgets/            # Componentes visuais globais (AppCard, status_chip, etc.)
+  features/             # Funcionalidades de negócio isoladas
+    onboarding/         # Fluxo de boas-vindas e Splash Screen
+    dashboard/          # Aba principal com resumos e economia Selic
+    subscriptions/      # Lista, CRUD e detalhes de assinaturas + relatórios
+    settings/           # Ajustes do perfil, moedas e temas dinâmicos
+test/                   # Testes unitários de regras, widgets e integração (espelhando a lib)
 docs/                   # Documentação detalhada da arquitetura do projeto
 ```
 
